@@ -462,8 +462,13 @@ function journal_print_overview($courses, &$htmlarray) {
         } else {
             $journalopen = true;
         }
-
-        if ($journalopen) {
+        $sql = "SELECT *
+        FROM {journal_entries}
+        WHERE userid = $USER->id
+        AND journal = $journal->id";
+        $user_entries = $DB->get_records_sql($sql);
+        $has_entry = count($user_entries) > 0;
+        if ($journalopen && !$has_entry) {
             $str = '<div class="journal overview"><div class="name">'.
                    $strjournal.': <a '.($journal->visible ? '' : ' class="dimmed"').
                    ' href="'.$CFG->wwwroot.'/mod/journal/view.php?id='.$journal->coursemodule.'">'.
