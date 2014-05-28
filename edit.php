@@ -23,6 +23,12 @@ if (! $journal = $DB->get_record("journal", array("id" => $cm->instance))) {
     print_error("Course module is incorrect");
 }
 
+$timenow = time();
+
+if ($journal->enddate && $journal->enddate < $timenow) {
+    require_capability('mod/journal:manageentries', $context);
+}
+
 
 // Header
 $PAGE->set_url('/mod/journal/edit.php', array('id' => $id));
@@ -48,8 +54,6 @@ $form = new mod_journal_entry_form(null, array('current' => $data));
 
 /// If data submitted, then process and store.
 if ($fromform = $form->get_data()) {
-
-    $timenow = time();
 
     // Common
     $newentry = new StdClass();
