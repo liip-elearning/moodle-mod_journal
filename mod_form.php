@@ -20,7 +20,7 @@ class mod_journal_mod_form extends moodleform_mod {
 
     public function definition() {
 
-        global $COURSE;
+        global $COURSE, $USER;
         $mform    =& $this->_form;
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
@@ -47,6 +47,11 @@ class mod_journal_mod_form extends moodleform_mod {
         } else {
             $mform->setDefault('days', '0');
         }
+
+        $mform->addElement('header', 'time_limit', get_string('time_limit', 'journal'));
+
+        $mform->addElement('date_time_selector', 'enddate', get_string('end_date', 'journal'), array('optional'=>true));
+        $mform->addHelpButton('enddate', 'end_date_help', 'journal');
 
         $this->standard_grading_coursemodule_elements();
 

@@ -37,6 +37,12 @@ if (! $journal = $DB->get_record("journal", array("id" => $cm->instance))) {
     print_error("Course module is incorrect");
 }
 
+$timenow = time();
+
+if ($journal->enddate && $journal->enddate < $timenow) {
+    require_capability('mod/journal:manageentries', $context);
+}
+
 // Header
 $PAGE->set_url('/mod/journal/edit.php', array('id' => $id));
 $PAGE->navbar->add(get_string('edit'));

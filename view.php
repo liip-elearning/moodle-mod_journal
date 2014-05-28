@@ -99,12 +99,15 @@ if ($timenow > $timestart) {
     echo $OUTPUT->box_start();
 
     // Edit button
-    if ($timenow < $timefinish) {
+    $timeended = $journal->enddate != 0 && $journal->enddate < $timenow;
+    if (($timenow < $timefinish && !$timeended) || $entriesmanager) {
 
         if ($canadd) {
             echo $OUTPUT->single_button('edit.php?id='.$cm->id, get_string('startoredit', 'journal'), 'get',
                 array("class" => "singlebutton journalstart"));
         }
+    } else if ($timeended && !$entriesmanager) {
+        echo '<span class="warning">' . get_string('timesup', 'journal') . '</span><br>';
     }
 
     // Display entry
