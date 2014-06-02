@@ -457,10 +457,12 @@ function journal_print_overview($courses, &$htmlarray) {
             } else {
                 $journal->timefinish = 9999999999;
             }
-            $journalopen = ($journal->timestart < $timenow && $timenow < $journal->timefinish);
+            $journalopen = ($journal->timestart < $timenow && $timenow < $journal->timefinish && $timenow < $journal->enddate);
 
         } else {
-            $journalopen = true;
+            if  ($journal->enddate == 0 && $timenow < $journal->enddate) {
+                $journalopen = true;
+            }
         }
         $sql = "SELECT *
         FROM {journal_entries}
