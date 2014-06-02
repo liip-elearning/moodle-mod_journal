@@ -71,13 +71,6 @@ function xmldb_journal_upgrade($oldversion=0) {
         $table = new xmldb_table('journal');
         $end_date_field = new xmldb_field('enddate', XMLDB_TYPE_INTEGER, '10', null, XMLDB_NOTNULL, null, 0, 'timemodified');
         $dbman->add_field($table, $end_date_field);
-        $entries = $DB->get_records('journal');
-        if ($entries) {
-            foreach ($entries as $entry) {
-                $entry->enddate = 0;
-                $DB->update_record('journal', $entry);
-            }
-        }
 
         // journal savepoint reached
         upgrade_mod_savepoint(true, 2013112801, 'journal');

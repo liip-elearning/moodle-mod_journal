@@ -443,6 +443,7 @@ function journal_print_overview($courses, &$htmlarray) {
     $timenow = time();
     foreach ($journals as $journal) {
 
+        $journalopen = false;
         if (empty($courses[$journal->course]->format)) {
             $courses[$journal->course]->format = $DB->get_field('course', 'format', array('id' => $journal->course));
         }
@@ -460,17 +461,12 @@ function journal_print_overview($courses, &$htmlarray) {
             $journalopen = ($journal->timestart < $timenow && $timenow < $journal->timefinish && $timenow < $journal->enddate);
 
         } else {
-            if  ($journal->enddate == 0 && $timenow < $journal->enddate) {
+            if  ($journal->enddate == 0 || $timenow < $journal->enddate) {
                 $journalopen = true;
             }
         }
-        $sql = "SELECT *
-        FROM {journal_entries}
-        WHERE userid = $USER->id
-        AND journal = $journal->id";
-        $user_entries = $DB->get_records_sql($sql);
-        $has_entry = count($user_entries) > 0;
-        if ($journalopen && !$has_entry) {
+
+        if ($journalopen && !user_has_entries($journal)) {
             $str = '<div class="journal overview"><div class="name">'.
                    $strjournal.': <a '.($journal->visible ? '' : ' class="dimmed"').
                    ' href="'.$CFG->wwwroot.'/mod/journal/view.php?id='.$journal->coursemodule.'">'.
@@ -483,6 +479,17 @@ function journal_print_overview($courses, &$htmlarray) {
             }
         }
     }
+}
+
+function user_has_entries($journal) {
+    global $USER, $DB;
+
+    $sql = "SELECT *
+        FROM {journal_entries}
+        WHERE userid = $USER->id
+        AND journal = $journal->id";
+    $user_entries = $DB->get_records_sql($sql);
+    return count($user_entries) > 0;
 }
 
 function journal_get_user_grades($journal, $userid=0) {
