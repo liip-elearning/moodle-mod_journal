@@ -5,7 +5,7 @@ class mod_journal_mod_form extends moodleform_mod {
 
     function definition() {
 
-        global $COURSE, $USER;
+        global $COURSE;
         $mform    =& $this->_form;
 
         $mform->addElement('header', 'general', get_string('general', 'form'));
