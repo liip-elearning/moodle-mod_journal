@@ -49,6 +49,11 @@ $form = new mod_journal_entry_form(null, array('current' => $data));
 /// If data submitted, then process and store.
 if ($fromform = $form->get_data()) {
 
+    // Prevent CSFR.
+    confirm_sesskey();
+
+    $timenow = time();
+
     // Common
     $newentry = new StdClass();
     $newentry->text = $fromform->text["text"];
